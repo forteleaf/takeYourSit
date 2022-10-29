@@ -23,6 +23,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.forteleaf.takeyoursit.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
@@ -45,36 +47,39 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        val adapter = DeviceListAdapter()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        val navController = findNavController(R.id.nav_host_fragment_content_main)
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
+
+
         // button event button_first2
-        val btn1: Button = findViewById(R.id.button_first2);
-        val btn2: Button = findViewById(R.id.button_first3)
-        val textView1: TextView = findViewById(R.id.textview_first);
+//        val btn1: Button = findViewById(R.id.button_first2);
+//        val btn2: Button = findViewById(R.id.button_first3)
+//        val textView1: TextView = findViewById(R.id.textview_first);
 
 
         requestPermission()
 
-        btn1.setOnClickListener {
-            scanLeDevice()
-        }
+//        btn1.setOnClickListener {
+//            scanLeDevice()
+//        }
+//
+//        btn2.setOnClickListener {
+//        }
 
-        btn2.setOnClickListener {
-        }
-
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "database-name"
-        ).build()
 
     }
 
@@ -91,19 +96,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             isScanning = false
             bluetoothLeScanner.stopScan(scanCallback);
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun scanLeDevice(bluetoothAdapter: BluetoothAdapter, handler: Handler) {
-        if (bluetoothAdapter.isEnabled) {
-            // Stops scanning after a pre-defined scan period.
-            handler.postDelayed({
-                bluetoothAdapter.stopLeScan(leScanCallback)
-            }, SCAN_PERIOD)
-            bluetoothAdapter.startLeScan(leScanCallback)
-        } else {
-            bluetoothAdapter.stopLeScan(leScanCallback)
         }
     }
 
