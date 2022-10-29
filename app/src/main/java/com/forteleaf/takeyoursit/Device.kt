@@ -10,8 +10,8 @@ data class Device(
     @PrimaryKey @ColumnInfo(name= "address") val address: String,
     val name: String,
     val rssi: Int,
-    val distance: Double,
-    val timestamp: Long
+    val distance: Int,
+//    val timestamp: Long
 )
 
 

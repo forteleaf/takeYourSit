@@ -36,4 +36,7 @@ interface DeviceDao {
      */
     @Query("SELECT * FROM device_table ORDER BY name ASC")
     fun getAlphabetizedDevices(): Flow<List<Device>>
+
+    @Query("DELETE FROM device_table")
+    suspend fun deleteAll()
 }

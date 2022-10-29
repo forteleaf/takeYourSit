@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * 클래스를 Room 데이터베이스가 되도록 @Database로 주석 처리하고 주석 매개변수를 사용하여 데이터베이스에 속한 항목을 선언하고 버전 번호를 설정합니다. 각 항목은 데이터베이스에 만들어질 테이블에 상응합니다.
@@ -26,7 +29,7 @@ public abstract class DeviceRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: DeviceRoomDatabase? = null
 
-        fun getDatabase(context: Context): DeviceRoomDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): DeviceRoomDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             // INSTANCE가 null이 아니면 반환하고,
@@ -36,11 +39,38 @@ public abstract class DeviceRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     DeviceRoomDatabase::class.java,
                     "device_database"
-                ).build()
+                )
+                    .addCallback(DeviceDatabaseCallback(scope))
+                    .build()
                 INSTANCE = instance
                 // return instance
                 instance
             }
+        }
+
+        private class DeviceDatabaseCallback(
+            private val scope: CoroutineScope
+        ) : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                INSTANCE?.let { database ->
+                    scope.launch {
+                        populateDatabase(database.deviceDao())
+                    }
+                }
+            }
+
+            suspend fun populateDatabase(deviceDao: DeviceDao) {
+                // Start the app with a clean database every time.
+                deviceDao.deleteAll()
+
+                var device = Device("00:00:00:00:00:01", "Device1", -16, 1)
+                deviceDao.insert(device)
+                device = Device("00:00:00:00:00:02", "Device2", -16, 0)
+                deviceDao.insert(device)
+                // Not needed if you only populate on creation.
+            }
+
         }
     }
 
