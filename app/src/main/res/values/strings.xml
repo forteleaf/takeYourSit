@@ -13,4 +13,10 @@
     <string name="bluetooth_search">scan</string>
     <string name="bluetooth_not_supported">bluetooth not supported</string>
     <string name="ble_not_supported">bluetooth le not supported</string>
+
+    <string name="hint_word">Word...</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Word not saved because it is empty.</string>
+    <string name="add_word">Add word</string>
+
 </resources>
