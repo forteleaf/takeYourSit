@@ -23,6 +23,31 @@ public abstract class DeviceRoomDatabase : RoomDatabase() {
 
     abstract fun deviceDao(): DeviceDao
 
+    private class DeviceDatabaseCallback(
+        private val scope: CoroutineScope
+    ) : RoomDatabase.Callback() {
+
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            INSTANCE?.let { database ->
+                scope.launch {
+                    populateDatabase(database.deviceDao())
+                }
+            }
+        }
+
+        suspend fun populateDatabase(deviceDao: DeviceDao) {
+            // Start the app with a clean database every time.
+            deviceDao.deleteAll()
+
+            var device = Device("00:00:00:00:00:01", "Device1", -16, 1)
+            deviceDao.insert(device)
+            device = Device("00:00:00:00:00:02", "Device2", -16, 0)
+            deviceDao.insert(device)
+            // Not needed if you only populate on creation.
+        }
+    }
+
     companion object {
         // Singleton prevents multiple instances of database opening at the same time.
         // Singleton은 동시에 여러 데이터베이스 인스턴스가 열리는 것을 방지합니다.
@@ -46,31 +71,6 @@ public abstract class DeviceRoomDatabase : RoomDatabase() {
                 // return instance
                 instance
             }
-        }
-
-        private class DeviceDatabaseCallback(
-            private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                INSTANCE?.let { database ->
-                    scope.launch {
-                        populateDatabase(database.deviceDao())
-                    }
-                }
-            }
-
-            suspend fun populateDatabase(deviceDao: DeviceDao) {
-                // Start the app with a clean database every time.
-                deviceDao.deleteAll()
-
-                var device = Device("00:00:00:00:00:01", "Device1", -16, 1)
-                deviceDao.insert(device)
-                device = Device("00:00:00:00:00:02", "Device2", -16, 0)
-                deviceDao.insert(device)
-                // Not needed if you only populate on creation.
-            }
-
         }
     }
 

@@ -16,7 +16,4 @@ class DevicesApplication : Application() {
     // 데이터베이스를 초기화합니다.
     val database by lazy { DeviceRoomDatabase.getDatabase(this, applicationScope) }
     val repository by lazy { DeviceRepository(database.deviceDao()) }
-
-
-
 }

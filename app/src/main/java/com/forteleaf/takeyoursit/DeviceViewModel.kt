@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
  * 새 코루틴을 실행하고 정지 함수인 저장소의 insert를 호출합니다.
  * 앞서 언급한 바와 같이 ViewModel에는 viewModelScope이라는 수명 주기 기반의 코루틴 범위가 있으며 여기서 사용합니다.
  */
-class DeviceViewModel(private val repository: DeviceRepository): ViewModel() {
+class DeviceViewModel(private val repository: DeviceRepository) : ViewModel() {
 
     val allDevices: LiveData<List<Device>> = repository.allDevices.asLiveData()
 
@@ -29,12 +29,13 @@ class DeviceViewModel(private val repository: DeviceRepository): ViewModel() {
  * viewModels와 ViewModelProvider.Factory를 사용하여 프레임워크에서 ViewModel의 수명 주기를 처리합니다.
  * 구성 변경에도 유지되고 Activity가 다시 생성되더라도 항상 WordViewModel 클래스의 올바른 인스턴스를 가져오게 됩니다.
  */
-class DeviceViewModelFactory(private val repository: DeviceRepository): ViewModelProvider.Factory {
+class DeviceViewModelFactory(private val repository: DeviceRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(DeviceViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(DeviceViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return DeviceViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
+
 }

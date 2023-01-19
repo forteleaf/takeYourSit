@@ -14,7 +14,7 @@ class NewDeviceActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_device)
-        editWordView = findViewById(R.id.edit_word)
+        editWordView = findViewById(R.id.edit_device)
 
         val button = findViewById<Button>(R.id.button_save)
         button.setOnClickListener {
